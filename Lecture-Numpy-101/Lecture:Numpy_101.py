@@ -11,7 +11,8 @@ This tutorial was contributed by [Ashwani Rathee](https://github.com/ashwani-rat
 
 !python --version
 
-"""## What is NumPy?
+"""### What is NumPy?
+
 NumPy, which stands for Numerical Python, is a python library consisting of multidimensional array objects and a collection of routines for processing those arrays. Using NumPy, mathematical and logical operations on arrays can be performed. This tutorial explains the basics of NumPy such as its architecture and environment. It also discusses the various array functions, types of indexing, etc.
 
 In 2005,Travis Oliphant created NumPy Package based on previous NumArray.NumPy is often used along with packages like Pandas,SciPy (Scientific Python) and Mat−plotlib (plotting library). 
@@ -24,6 +25,8 @@ NumPy aims to provide an array object that is up to 50x faster than traditional 
 The array object in NumPy is called "ndarray", it provides a lot of supporting functions that make working with ndarray very easy.
 
 Arrays are very frequently used in data science, where speed and resources are very important.
+<img src="https://i.imgur.com/jKHfhRB.png" alt="alt text" width="500"/>
+
 
 ### Audience :
 - People who wish to learn about machine learning concepts in future.
@@ -37,14 +40,15 @@ If you have Python and PIP already installed on a system, then install it using 
 pip install numpy
 ```
 
-### Import Numpy
+### Import Numpy 
+<img src="https://i.imgur.com/Uv7ktFX.png" alt="alt text" width="200"/>
 """
 
 import numpy as np 
 import matplotlib.pylab as plt
 from numpy import random
 #np is a common alias for numpy
-print("Numpy Version: " ,np.__version__)
+print("Numpy Version: " ,np.__version__,)
 
 #np? #Help function
 
@@ -236,6 +240,14 @@ print("x2: \n",x2)
 print("Vertical Stack: \n",np.vstack((x1,x2))) #useful in pandas if you remember csv
 print("Horizontal Stack: \n",np.hstack((x1,x2)))
 
+# Generate 2x10 array
+ss_arr_5 = np.random.randint(10, size=(2, 10))
+print("ss_arr_5\n", ss_arr_5)
+# Split into 5 arrays taking from both arrays in multidimensional array
+np.hsplit(ss_arr_5, 5)
+# Split after 2nd & 4th column
+np.hsplit(ss_arr_5, (2, 4))
+
 print("x1: \n",x1)
 print("x2: \n",x2)
 x3 = np.delete(x1,2,1)
@@ -259,6 +271,7 @@ print(x1,"\n",x2)
 
 x2=x1.copy()
 print(x1,"\n",x2)
+#main difference between a copy and a view of an array is that the copy is a new array, and the view is just a view of the original array.
 
 """### Array Math
 Basic mathematical functions operate elementwise on arrays, and are available both as operator overloads and as functions.
@@ -312,6 +325,130 @@ print("cumsum : " ,y.cumsum(axis=0))
 print("max:",y.max(axis=0))
 print("min:",y.min(axis=0))
 
+"""### Linear Algebra
+
+"""
+
+from numpy import linalg as LA
+# Random 4 digit 1D array between 0 to 100
+arr_5 = np.array([[1, 2], [3, 4]])
+arr_6 = np.array([[2, 4], [6, 9]])
+
+print("arr_5\n", arr_5)
+print("arr_6\n", arr_6)
+arr_8 = np.array([[5, 6], [7, 8]])
+
+# Matrix multiplication with Dot Product
+# (1 * 2) + (2 * 6) = 14 [0,0]
+# (1 * 4) + (2 * 9) = 22 [0,1]
+# (3 * 2) + (4 * 6) = 30 [1,0]
+# (3 * 4) + (4 * 9) = 12 + 36 = 48 [1,1]
+np.dot(arr_5, arr_6)
+# Compute dot product of 2 or more arrays
+LA.multi_dot([arr_5, arr_6, arr_8])
+
+# Inner product 
+# (1 * 2) + (2 * 4) = 10 [0,0]
+# (1 * 6) + (2 * 9) = 24 [0,1]
+# (3 * 2) + (4 * 4) = 22 [1,0]
+# (3 * 6) + (4 * 9) = 54 [1,1]
+np.inner(arr_5, arr_6)
+np.dot(arr_5, arr_6)
+
+# Tensor Dot Product
+# (1 * 1) + (2 * 2) + (3 * 3) + (4 * 4) = 30
+# (5 * 1) + (6 * 2) + (7 * 3) + (8 * 4) = 
+arr_9 = np.array([[[1, 2],
+        [3, 4]],
+       [[5, 6],
+        [7, 8]]])
+arr_10 = np.array([[1, 2],
+       [3, 4]], dtype=object)
+np.tensordot(arr_9, arr_10)
+
+# Einstein Summation : Provides many ways to perform
+# operations on multiple arrays
+arr_11 = np.array([0, 1])
+arr_12 = np.array([[0, 1, 2, 3], [4, 5, 6, 7]])
+# Left Side of -> : 1 axis for arr_11 and 2 axis for arr_12
+# Right of -> : Array we want (1D Array)
+# ij : Means multiply arr_11 single item by each column of arr_12 and sum
+# [0, 4 + 5 + 6 + 7]
+np.einsum('i,ij->i', arr_11, arr_12)
+# Sum values in arr_11
+np.einsum('i->', arr_11)
+# Dot Product
+arr_3 = np.array([1, 2, 3, 4])
+arr_4 = np.array([2, 4, 6, 8])
+print("arr_3\n", arr_3)
+print("arr_4\n", arr_4)
+np.einsum('i,i->', arr_3, arr_4)
+# Matrix multiplication
+np.einsum('ij,jk', arr_5, arr_6)
+# Get diagonal
+np.einsum('ii', arr_5)
+# Transpose
+np.einsum('ji', arr_5)
+
+# Raise matrix to the power of n
+# Given [[a, b], [c, d]]
+# [[a² + bc, ab +db], [ac + dc, d² + bc]
+LA.matrix_power(arr_5, 2)
+
+# Kronecker product of 2 arrays
+# Given [[a, b], [c, d]], [[e, f], [g, h]]
+# [[a*e, a*f, b*e, b*f], [a*g, a*h, b*g, b*h], ...]
+np.kron(arr_5, arr_6)
+
+# Compute eigenvalues
+LA.eig(arr_5) # Returns eigenvectors
+LA.eigvals(arr_5)
+
+# Get Vector Norm sqrt(sum(x**2))
+LA.norm(arr_5)
+
+# Get Multiplicative Inverse of a matrix
+LA.inv(arr_5)
+
+# Get Condition number of matrix
+LA.cond(arr_5)
+
+# Determinates are used to compute volume, area, to solve systems
+# of equations and more. It is a way you can multiply values in a
+# matrix to get 1 number.
+# For a matrix to have an inverse its determinate must not equal 0
+# det([[a, b], [c, d]]) = a*d - b*c
+arr_12 = np.array([[1, 2], [3, 4]])
+# 1*4 - 2*3 = -2
+LA.det(arr_12)
+
+# Determinate of 3x3 Matrix
+# det([[a, b, c], [d, e, f], [g, h, i]]) = a*e*i - b*d*i + c*d*h
+# - a*f*h + b*f*g - c*e*g
+
+# When we multiply a matrix times its inverse we get the identity
+# matrix [[1,0],[0,1]] for a 2x2 matrix
+# Calculate the inverse 1/(a*d - b*c) * [[d, -b], [-c, a]]
+# 1/(4 - 6) = -.5 -> [[-.5*4, -.5*-2], [-.5*-3, -.5*a]]
+arr_12_i = LA.inv(arr_12)
+arr_12_i
+
+np.dot(arr_12, arr_12_i)
+
+# Solving Systems of Linear Equations
+# If you have 3x + 5 = 9x -> 5 = 6x -> x = 5/6
+# If you have x + 4y = 10 & 6x + 18y = 42
+# Isolate x -> x = 10 - 4y
+# 6(10 - 4y) + 18y = 42 -> 60 - 24y + 18y = 42 - > -6y = -18 -> y = 3
+# x + 4*3 = 10 -> x = -2
+arr_13 = np.array([[1, 4], [6, 18]])
+arr_14 = np.array([10, 42])
+# Solve will solve this for you as well
+LA.solve(arr_13, arr_14)
+
+# Return a identity matrix with defined number of rows and columns
+np.eye(2, 2, dtype=int)
+
 x = np.array([[1,2],[3,4]])
 y = np.array([[5,6],[7,8]])
 
@@ -331,6 +468,47 @@ print(np.dot(x, v))
 #  [43 50]]
 print(x.dot(y))
 print(np.dot(x, y))
+
+"""### Statistics Functions"""
+
+x1 = np.arange(1,10)
+
+#mean
+print("Mean: ",np.mean(x1))
+
+#median
+print("Median:",np.median(x1))
+
+#average
+print("Average:",np.average(x1))
+
+#standard deviation
+print("Standard Deviation:",np.std(x1))
+
+#variance
+print("Variance:",np.var(x1))
+
+"""### Trignometry Functions"""
+
+x1 = np.linspace(-np.pi,np.pi,200)
+plt.plot(x1,np.sin(x1))
+np.arctan(1)
+# ALso sinh ,cosh,tanh,arcsinh,arccosh etc
+np.rad2deg(np.pi)
+np.deg2rad(np.pi)
+np.hypot(10,10)
+
+"""### Comparison Functions"""
+
+carr_1 = np.array([2, 3])
+carr_2 = np.array([3, 2])
+# Returns boolean based on whether arr_1 value Comparison arr_2 value
+np.greater(carr_1, carr_2)
+np.greater_equal(carr_1, carr_2)
+np.less(carr_1, carr_2)
+np.less_equal(carr_1, carr_2)
+np.not_equal(carr_1, carr_2)
+np.equal(carr_1, carr_2)
 
 """### Array Flags
 Ndarray object has the following attributes. Its current values are returned
@@ -356,7 +534,7 @@ print(arr.flags)
 - Learning the python hardway -> [Link](https://learnpythonthehardway.org/book/)
 - Free Code Camp's Videos -> [Link](https://www.youtube.com/watch?v=QUT1VHiLmmI)
 - Edureka's video on Numpy -> [Link](https://www.youtube.com/watch?v=8JfDAm9y_7s) || [Link-2](https://www.edureka.co/blog/python-numpy-tutorial/)
-- Derek Banas videos rock(the best) -> [Link](https://www.youtube.com/watch?v=8Y0qQEh7dJg)
+- Derek Banas videos rock(the best) -> [Link](https://www.youtube.com/watch?v=8Y0qQEh7dJg) || [Link](https://github.com/derekbanas/NumPy-Tutorial/blob/master/NumPy%20Tut.ipynb)
 - Numpy Playlist -> [Link](https://youtu.be/GB9ByFAIAH4?list=RDQMZI0VMokkS5U)
 - Scipy Lectures -> [Link](https://scipy-lectures.org/)
 - Machine Learning Plus -> [Link](https://www.machinelearningplus.com/python/numpy-tutorial-part1-array-python-examples/)
